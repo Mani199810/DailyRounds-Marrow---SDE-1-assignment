@@ -1,0 +1,122 @@
+.home-left-container {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  min-height: 100vh;
+  padding: 20px;
+  background:
+    url('../assets/images/backgroundImage.jpeg'),
+    linear-gradient(to right, rgba(174, 172, 174, 0.4), rgba(197, 183, 199, 1));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-blend-mode: overlay;
+}
+
+.home-content {
+  margin-top: 10%;
+  z-index: 10;
+  position: relative;
+}
+
+/* Heading styles */
+.home-content h1 {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  color: #521a91;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 0 10%;
+  z-index: 30;
+}
+.home-content p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: black;
+  font-family: 'american typewriter';
+  margin-bottom: 15%;
+  z-index: 20;
+}
+.home-content span {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #2e1e40;
+  justify-content: left;
+  align-items: start;
+  z-index: 20;
+}
+/* Paragraph styles */
+
+//   /* Responsive Design */
+//   @media (max-width: 768px) {
+//     .home-content {
+//       max-width: 90%;
+//       padding: 15px;
+//     }
+
+//     .home-content h1 {
+//       font-size: 2rem;
+//     }
+
+//     .home-content p {
+//       font-size: 1rem;
+//     }
+//   }
+
+.auth-container {
+  background: linear-gradient(to bottom, #fff, #d0cdcd);
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  min-height: 100vh;
+  width: 50%;
+
+}
+
+.auth-form {
+  padding: 2rem;
+  border-radius: 0.5rem;
+  height: 100%;
+}
+
+.auth-form h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #8854c0;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+}
+
+.terms-label {
+  width: 100%;
+  display: flex;
+  align-items: center; /* Aligns the checkbox and text vertically */
+  gap: 8px; /* Adds spacing between checkbox and text */
+  margin-bottom: 1rem;
+}
+
+.terms-label input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  padding: 0px;
+}
+
+.auth-button {
+  background-color: #8854c0;
+  color: #fff;
+  padding: 0.50rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.auth-button:hover {
+  background-color: #7042a3;
+}

@@ -1,0 +1,32 @@
+.task-create-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+  
+    .edit-icon {
+      cursor: pointer;
+      font-size: 18px;
+    }
+  
+    .editor-toolbar {
+      display: flex;
+      gap: 10px;
+      background: #a4a6a9;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      border:1px solid #7042a3;
+      svg {
+        cursor: pointer;
+      }
+    }
+  
+    .form-control {
+      resize: none;
+    }
+  
+    .form-check-input {
+      cursor: pointer;
+    }
+  }
+  
