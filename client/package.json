@@ -18,6 +18,7 @@
     "react-router-dom": "^6.8.2",
     "react-scripts": "^5.0.1",
     "react-toastify": "^9.1.1",
+    "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
     "redux-state-sync": "^3.1.4",
     "redux-thunk": "^3.1.0",
@@ -29,14 +30,13 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint src --ext .js,.jsx",
+    "lint": "eslint src",
     "lint:fix": "eslint src --ext .js,.jsx --fix",
     "format": "prettier --write \"src/**/*.{js,jsx,json,css,scss,md}\""
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {
@@ -55,16 +55,7 @@
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.15",
-    "eslint": "^8.57.1",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-prettier": "^5.2.3",
-    "eslint-plugin-react": "^7.37.4",
-    "eslint-plugin-react-hooks": "^4.6.2",
     "globals": "^16.0.0",
-    "prettier": "^3.5.2",
     "webpack": "^5.98.0",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.0"

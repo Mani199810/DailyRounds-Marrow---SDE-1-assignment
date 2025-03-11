@@ -6,7 +6,7 @@ const UserSchema = new mongoose.Schema({
     password: String,
     googleId: String,
 },{
-    collection: "category",
+    collection: "User",
     timestamps: true
 });
 

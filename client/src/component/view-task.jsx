@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { Button, Table } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import { FaDownload } from 'react-icons/fa';
+const baseUrl = 'http://localhost:5000/api/tasks';
+
 const TaskDetails = () => {
   const { id } = useParams();
   const [task, setTask] = useState(null);
@@ -13,7 +15,7 @@ const TaskDetails = () => {
     const fetchTask = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/tasks/${id}`,
+          `${baseUrl}/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -35,7 +37,7 @@ const TaskDetails = () => {
   const handleDownload = async (taskId, filename) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/tasks/${taskId}/attachment/${filename}`,
+        `${baseUrl}/${taskId}/attachment/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

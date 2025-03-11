@@ -4,7 +4,7 @@ import { IoIosAttach } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-
+const baseUrl = 'http://localhost:5000/api/tasks';
 const CreateTask = () => {
   const taskId = useParams();
   console.log('🚀 > CreateTask > taskId.id.id:', taskId.id);
@@ -12,20 +12,22 @@ const CreateTask = () => {
   const [taskType, setTaskType] = useState('Task');
   const [title, setTitle] = useState('');
   const [priority, setPriority] = useState('Select Priority');
-  const [assignedTo, setAssignedTo] = useState('Select Person');
   const [description, setDescription] = useState('');
   const [deliveryDate, setDeliveryDate] = useState('');
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('Pending');
-
+const existsUser=useSelector(stat => stat.existUser);
+const [assignedTo, setAssignedTo] = useState('Select Person');
+console.log('existsUser=',existsUser.users);
   const token = useSelector(stat => stat.user.token);
+  console.log("🚀 > CreateTask > token:", token);
   useEffect(() => {
     if (taskId.id) {
       const fetchTaskDetails = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/tasks/${taskId.id}`,
+            `${baseUrl}/${taskId.id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -40,7 +42,6 @@ const CreateTask = () => {
           setDescription(task.description);
           setDeliveryDate(task.deliveryDate);
           setStatus(task.status);
-          // Handle attached files if needed
         } catch (error) {
           console.error('Error fetching task details:', error);
         }
@@ -99,7 +100,7 @@ const CreateTask = () => {
       try {
         const response = taskId.id
           ? await axios.put(
-              `http://localhost:5000/api/tasks/${taskId.id}`,
+              `${baseUrl}/${taskId.id}`,
               formData,
               {
                 headers: {
@@ -108,7 +109,7 @@ const CreateTask = () => {
                 },
               },
             )
-          : await axios.post('http://localhost:5000/api/tasks', formData, {
+          : await axios.post(`${baseUrl}`, formData, {
               headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data',
@@ -184,30 +185,35 @@ const CreateTask = () => {
           </Form.Group>
 
           <Form.Group className='mb-3'>
-            <Form.Label>Assign to</Form.Label>
-            <Dropdown style={{ width: '15%' }}>
-              <Dropdown.Toggle
-                variant='light'
-                className='w-100 text-start d-flex justify-content-between align-items-center'
-              >
-                {assignedTo}
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item onClick={() => setAssignedTo('Person 1')}>
-                  Person 1
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => setAssignedTo('Person 2')}>
-                  Person 2
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => setAssignedTo('Person 3')}>
-                  Person 3
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-            {errors.assignedTo && (
-              <div className='text-danger'>{errors.assignedTo}</div>
-            )}
-          </Form.Group>
+    <Form.Label>Assign to</Form.Label>
+    <Dropdown style={{ width: '15%' }}>
+        <Dropdown.Toggle
+            variant='light'
+            className='w-100 text-start d-flex justify-content-between align-items-center'
+        >
+            {assignedTo || 'Select a user'} 
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+    {existsUser?.users?.length > 0 ? (
+        existsUser.users.map((user, index) => (
+            <Dropdown.Item
+                key={user._id || index}
+                onClick={() => setAssignedTo(user.name)}
+            >
+                {user.name}
+            </Dropdown.Item>
+        ))
+    ) : (
+        <Dropdown.Item disabled>No users available</Dropdown.Item>
+    )}
+</Dropdown.Menu>
+
+    </Dropdown>
+    {errors?.assignedTo && (
+        <div className='text-danger'>{errors.assignedTo}</div>
+    )}
+</Form.Group>
+
 
           <Form.Group className='mb-3'>
             <Form.Label>Priority</Form.Label>

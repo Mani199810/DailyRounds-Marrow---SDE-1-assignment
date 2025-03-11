@@ -27,7 +27,8 @@ const Sidebar = () => {
         </Nav.Link>
         <Nav.Link
           onClick={() => {
-            navigator('/'), dispatch(logoutUser());
+            navigator('/');
+            dispatch(logoutUser());
           }}
           className='app-nav-text'
         >
@@ -36,15 +37,17 @@ const Sidebar = () => {
       </Nav>
       <div className='mt-auto p-3'>
         <Button
-          href='/create-task'
+          onClick={() => navigator('/create-task')}
           style={{ width: '100%', background: '#7042a3', border: 'none' }}
         >
           <div
-            style={{ height: '20%' }}
+            style={{ height: '100%', width: '100%' }}
             className='d-flex flex-column align-items-center'
           >
             <FaPlusCircle className='mb-1' />
-            <span style={{ fontSize: '12px' }}>Create New Task</span>
+            <div style={{ fontSize: '12px' }}>
+              Create New Task
+            </div>
           </div>
         </Button>
       </div>

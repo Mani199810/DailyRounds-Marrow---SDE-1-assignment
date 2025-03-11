@@ -2,23 +2,21 @@ import express from 'express';
 import multer from 'multer';
 import Task from '../models/taskModal.js';
 import { verifyToken } from '../middleware/auth.js';
-
+import { Parser } from 'json2csv';
 const router = express.Router();
 
-// Set up memory storage for binary file storage
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 router.use(verifyToken);
 
-// 📌 1️⃣ CREATE a Task with File Uploads
 router.post("/tasks", upload.array('attachments', 5), async (req, res) => {
   console.log('req',req.body)
   try {
     const attachments = req.files.map(file => ({
       filename: file.originalname,
       mimetype: file.mimetype,
-      buffer: file.buffer, // Store in memory
+      buffer: file.buffer, 
     }));
 
     const task = new Task({ ...req.body, attachments });
@@ -29,7 +27,6 @@ router.post("/tasks", upload.array('attachments', 5), async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
-// 📌 2️⃣ GET All Tasks
 router.get('/tasks', async (req, res) => {
   try {
     const { title } = req.query;
@@ -41,7 +38,32 @@ router.get('/tasks', async (req, res) => {
   }
 });
 
-// 📌 3️⃣ GET a Single Task by ID
+router.get('/tasks/export', async (req, res) => {
+  try {
+    const tasks = await Task.find().populate('assignedTo', 'name');
+
+    const formattedTasks = tasks.map(task => ({
+      title: task.title,
+      description: task.description,
+      assignedTo: task.assignedTo || 'Unassigned',
+      status: task.status,
+      createdAt: task.createdAt.toISOString(),
+    }));
+
+    const fields = ['title', 'description', 'assignedTo', 'status', 'createdAt'];
+    const parser = new Parser({ fields });
+
+    const csv = parser.parse(formattedTasks);
+
+    res.header('Content-Type', 'text/csv');
+    res.attachment('tasks.csv');
+    res.status(200).send(csv);
+
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to export CSV' });
+  }
+});
+
 router.get('/tasks/:id', async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
@@ -52,19 +74,16 @@ router.get('/tasks/:id', async (req, res) => {
   }
 });
 
-// 📌 4️⃣ UPDATE a Task (including file replacement)
 router.put('/tasks/:id', upload.array('attachments', 5), async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
     if (!task) return res.status(404).json({ error: 'Task not found' });
 
-    // Update fields
     task.title = req.body.title || task.title;
     task.taskType = req.body.taskType || task.taskType;
     task.priority = req.body.priority || task.priority;
     task.status = req.body.status || task.status;
 
-    // Replace attachments if new files are uploaded
     if (req.files && req.files.length > 0) {
       task.attachments = req.files.map(file => ({
         filename: file.originalname,
@@ -80,7 +99,6 @@ router.put('/tasks/:id', upload.array('attachments', 5), async (req, res) => {
   }
 });
 
-// 📌 5️⃣ DELETE a Task (Removes Attachments)
 router.delete('/tasks/:id', async (req, res) => {
   try {
     const task = await Task.findByIdAndDelete(req.params.id);
@@ -92,7 +110,6 @@ router.delete('/tasks/:id', async (req, res) => {
   }
 });
 
-// 📌 6️⃣ DOWNLOAD an Attachment
 router.get('/tasks/:taskId/attachment/:filename', async (req, res) => {
   try {
     const task = await Task.findById(req.params.taskId);

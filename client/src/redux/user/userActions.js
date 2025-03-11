@@ -11,6 +11,7 @@ export const loginUser = userData => {
   };
 };
 
+
 export const logoutUser = () => {
   return dispatch => {
     dispatch({

@@ -10,7 +10,6 @@ const TopNavbar = () => {
   const handleSearch = event => {
     if (event.key === 'Enter') {
       event.preventDefault();
-      // Handle the search logic here
       console.log('Search:', event.target.value);
       dispatch(setSearchTerm(event.target.value));
     }

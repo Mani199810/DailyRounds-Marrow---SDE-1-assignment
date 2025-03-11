@@ -1,24 +1,50 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { FaEdit, FaTrash, FaDownload } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaDownload, FaUserCircle } from 'react-icons/fa';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineArrowDropDown } from 'react-icons/md';
+import { Button, ButtonGroup, Dropdown } from 'react-bootstrap';
+import { setExistUser } from '../redux/existuser/existUsersReducer';
+const baseUrl = 'http://localhost:5000/api';
 
 const Dashboard = () => {
+    const dispatch = useDispatch();
+const existsUser=useSelector(state=>state.existUser);
+  console.log("🚀 > Dashboard > existsUser:", existsUser.users);
   const [tasks, setTasks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortedTasks, setSortedTasks] = useState([]);
   const tasksPerPage = 10;
+  const [selectedUser, setSelectedUser] = useState('All');
+const [users, setUsers] = useState([]);
+  console.log("🚀 > Dashboard > users:", users);
   const { token, searchTerm } = useSelector(state => state.user);
-  console.log('🚀 > Dashboard > searchTerm:', searchTerm);
   const navigate = useNavigate();
+  const fetchUsers = useCallback(async () => {
+    try {
+        const response = await axios.get(`${baseUrl}/auth/users`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            }
+        });
+
+        dispatch(setExistUser(response.data));
+        response.data.unshift({ name: 'All' });
+        setUsers(response.data);
+    } catch (error) {
+        console.error('Error fetching users:', error.response?.data || error.message);
+    }
+}, [dispatch, token]);
+useEffect(() => {
+    fetchUsers();
+}, [fetchUsers]);
 
   useEffect(() => {
     const fetchTasks = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/tasks?title=${searchTerm || ''}`,
+          `${baseUrl}/tasks?title=${searchTerm || ''}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -30,7 +56,6 @@ const Dashboard = () => {
         console.error('Error fetching tasks:', error);
       }
     };
-
     fetchTasks();
   }, [searchTerm, token]);
 
@@ -41,7 +66,7 @@ const Dashboard = () => {
 
   const handleDelete = async taskId => {
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${taskId}`, {
+      await axios.delete(`${baseUrl}/tasks/${taskId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -55,7 +80,7 @@ const Dashboard = () => {
   const handleDownload = async (taskId, filename) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/tasks/${taskId}/attachment/${filename}`,
+        `${baseUrl}/tasks/export`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -63,16 +88,18 @@ const Dashboard = () => {
           responseType: 'blob',
         },
       );
+      console.log('csv response',response);
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', filename);
+      link.setAttribute('download', 'tasks.csv');
       document.body.appendChild(link);
       link.click();
     } catch (error) {
       console.error('Error downloading file:', error);
     }
   };
+
   const handleSortByStatus = useCallback(
     (e, status) => {
       const filteredValues = tasks.filter(task => task.status === status);
@@ -136,10 +163,31 @@ const Dashboard = () => {
     }
   };
 
+  const handleUserSelect = (userName) => {
+    setSelectedUser(userName);
+    const filteredTasks = tasks.filter(task => task.assignedTo === userName);
+    setSortedTasks(filteredTasks);
+  };
   return (
     <div className='container mt-2'>
       <div className='d-flex justify-content-between align-items-center mb-3'>
-        <h4>Tasks</h4>
+        <div className='d-flex align-items-center'>
+        <h4 className='me-2'>Tasks</h4>
+        <Dropdown as={ButtonGroup}>
+      <Button variant="light" className=' d-flex align-items-center gap-2'> <FaUserCircle className='fs-5' />{selectedUser}</Button>
+      <Dropdown.Toggle split variant="light" id="dropdown-split-basic" />
+      <Dropdown.Menu>
+        {users && users.map(user => (
+          <Dropdown.Item
+            key={user.name}
+            onClick={() => handleUserSelect(user.name)}
+          >
+            <span role="img" aria-label={user.name}></span>{user.name}
+          </Dropdown.Item>
+        ))}
+      </Dropdown.Menu>
+    </Dropdown>
+        </div>
         <div>
           <select
             className='form-select'
@@ -153,6 +201,9 @@ const Dashboard = () => {
             <option value='project2'>Project 2</option>
             <option value='project3'>Project 3</option>
           </select>
+          <button className='btn' onClick={() => handleDownload()}>
+            <FaDownload className='text-muted' />
+          </button>
         </div>
       </div>
       <div>
@@ -176,11 +227,11 @@ const Dashboard = () => {
                       className='form-select'
                       onChange={e => handleSortByStatus(e, e.target.value)}
                       style={{
-                        opacity: 0, // Hide the select text
+                        opacity: 0, 
                         position: 'absolute',
-                        width: '20px', // Make it small
+                        width: '20px',
                         height: '100%',
-                        cursor: 'pointer', // Keep interaction
+                        cursor: 'pointer',
                       }}
                     >
                       <option value=''>Sort by</option>
@@ -204,11 +255,11 @@ const Dashboard = () => {
                       className='form-select'
                       onChange={e => handleSortByPriority(e, e.target.value)}
                       style={{
-                        opacity: 0, // Hide the select text
+                        opacity: 0, 
                         position: 'absolute',
-                        width: '20px', // Make it small
+                        width: '20px',
                         height: '100%',
-                        cursor: 'pointer', // Keep interaction
+                        cursor: 'pointer', 
                       }}
                     >
                       <option value=''>Sort by</option>
@@ -222,6 +273,8 @@ const Dashboard = () => {
                   </div>
                 </div>
               </th>
+              <th scope='col'>Assigned to</th>
+
               <th scope='col'>Actions</th>
             </tr>
           </thead>
@@ -268,6 +321,7 @@ const Dashboard = () => {
                     {task.priority}
                   </button>
                 </td>
+                <td>{task.assignedTo}</td>
                 <td>
                   <button
                     className='btn'

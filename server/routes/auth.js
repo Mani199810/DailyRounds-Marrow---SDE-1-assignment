@@ -8,8 +8,7 @@ import { body, validationResult } from "express-validator";
 
 const router = express.Router();
 const generateToken = (user) =>
-	jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
+	jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "24h" });
 router.post(
 	"/register",
 	[
@@ -31,6 +30,24 @@ router.post(
 		const { name, email, password } = req.body;
 
 		try {
+			const sampleUsers = await User.find({ isSample: true });
+			if (sampleUsers.length === 0) {
+				const sampleUsers = [
+					{ name: 'Raghu', email: 'raghu@example.com', password: 'password123' },
+					{ name: 'Naveen', email: 'naveen@example.com', password: 'password123' },
+					{ name: 'Veena', email: 'veen@example.com', password: 'password123' },
+					{ name: 'Diana', email: 'diana@example.com', password: 'password123' },
+					{ name: 'Eve', email: 'eve@example.com', password: 'password123' }
+				];
+
+				const sampleUsersPromises = sampleData.map(async (user) => {
+					const hashedPassword = await bcrypt.hash(user.password, 10);
+					return new User({ ...user, password: hashedPassword }).save();
+				});
+
+				await Promise.all(sampleUsersPromises);
+			}
+
 			let user = await User.findOne({ email });
 			if (user) return res.status(400).json({ message: "User already exists" });
 
@@ -51,10 +68,27 @@ router.post(
 	}
 );
 
-// User Login
+
 router.post("/login", async (req, res) => {
 	const { email, password } = req.body;
+
+	const sampleUsers = [
+		{ name: 'Raghu', email: 'raghu@example.com', password: 'password123' },
+		{ name: 'Naveen', email: 'naveen@example.com', password: 'password123' },
+		{ name: 'Veena', email: 'veen@example.com', password: 'password123' },
+		{ name: 'Diana', email: 'diana@example.com', password: 'password123' },
+		{ name: 'Eve', email: 'eve@example.com', password: 'password123' }
+	];
+
 	try {
+		for (const sampleUser of sampleUsers) {
+			const existingUser = await User.findOne({ email: sampleUser.email });
+			if (!existingUser) {
+				const hashedPassword = await bcrypt.hash(sampleUser.password, 10);
+				await User.create({ ...sampleUser, password: hashedPassword });
+			}
+		}
+
 		const user = await User.findOne({ email }).select("+password");
 		if (!user) return res.status(400).json({ message: "User not found" });
 
@@ -71,12 +105,11 @@ router.post("/login", async (req, res) => {
 	}
 });
 
-// Logout
+
 router.get("/logout", (req, res) => {
 	res.clearCookie("token").json({ message: "Logged out successfully" });
 });
 
-// Google OAuth Callback
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 router.get(
 	"/google/callback",
@@ -88,5 +121,15 @@ router.get(
 		);
 	}
 );
+
+router.get('/users', async (req, res) => {
+    try {
+        const users = await User.find({ isSample: false }).select('name email');
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 export default router;

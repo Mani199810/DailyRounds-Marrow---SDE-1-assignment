@@ -1,6 +1,4 @@
-import { AUTHENTICATED_USER, LOGOUT_USER, SEARCH_TASK } from './userActions'; // Import action types
-
-// Load user from localStorage if available
+import { AUTHENTICATED_USER, LOGOUT_USER, SEARCH_TASK } from './userActions'
 const savedUser = JSON.parse(localStorage.getItem('user')) || {};
 
 const initialState = {
@@ -10,7 +8,6 @@ const initialState = {
   searchTerm: '',
 };
 
-// User Reducer Function
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case AUTHENTICATED_USER: {
@@ -19,11 +16,11 @@ const userReducer = (state = initialState, action) => {
         token: action.payload.token,
         email: action.payload.email,
       };
-      localStorage.setItem('user', JSON.stringify(newUser)); // Persist login
+      localStorage.setItem('user', JSON.stringify(newUser));
       return { ...state, ...newUser };
     }
     case LOGOUT_USER:
-      localStorage.removeItem('user'); // Clear storage on logout
+      localStorage.removeItem('user');
       return { ...initialState, searchTerm: '' };
 
     case SEARCH_TASK:
