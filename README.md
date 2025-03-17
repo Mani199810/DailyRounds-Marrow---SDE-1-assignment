@@ -61,6 +61,10 @@ npm run start-client
 - The server will run on `http://localhost:5000`
 - The client will run on `http://localhost:3000`
 
+## User Registration
+
+- Users must register if they are not already existing in the system.
+
 ## API Endpoints
 
 | Method | Endpoint           | Description            |
