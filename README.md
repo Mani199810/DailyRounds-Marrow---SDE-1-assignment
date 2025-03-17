@@ -53,12 +53,15 @@ Run the following command to start both the backend and frontend:
 
 ### Individual Starts
 To run only the backend:
+
+```bash
 cd server
 npm run start-server
 ```
 
 To run only the frontend:
 ```bash
+cd client
 npm run start
 ```
 
