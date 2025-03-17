@@ -61,6 +61,7 @@ To run only the frontend:
 cd client
 npm run start
 ```
+
 - The server will run on `http://localhost:5000`
 - The client will run on `http://localhost:3000`
 
