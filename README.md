@@ -1,4 +1,8 @@
 # DailyRounds/Marrow - SDE I Assignment
+## User Registration Guide
+
+-For a step-by-step guide on the registration process, watch the following video tutorial:
+
 
 This project is a Full Stack web application built using the following technologies:
 
