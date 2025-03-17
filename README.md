@@ -41,7 +41,6 @@ GOOGLE_CLIENT_SECRET=your_client_secret
 ```
 
 ### Install Dependencies
-```bash
 cd server
 npm install
 cd client
@@ -51,17 +50,14 @@ npm install
 
 ### Start the Application
 Run the following command to start both the backend and frontend:
-```bash
 
 ### Individual Starts 
 To run only the backend:
-```bash
 cd server
 npm run start-server
 ```
 
 To run only the frontend:
-```bash
 cd client
 npm run start
 ```
