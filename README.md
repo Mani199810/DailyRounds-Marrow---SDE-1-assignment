@@ -26,6 +26,7 @@ cd DailyRounds-Marrow---SDE-1-assignment
 
 ### Install Dependencies
 ```bash
+cd server
 npm install
 cd client
 npm install
