@@ -52,7 +52,7 @@ GOOGLE_CLIENT_SECRET=your_client_secret
 Run the following command to start both the backend and frontend:
 ```bash
 
-### Individual Starts (Optional)
+### Individual Starts
 To run only the backend:
 ```bash
 npm run start-server
@@ -60,7 +60,7 @@ npm run start-server
 
 To run only the frontend:
 ```bash
-npm run start-client
+npm run start
 ```
 - The server will run on `http://localhost:5000`
 - The client will run on `http://localhost:3000`
