@@ -28,15 +28,6 @@ Follow these steps to clone and run the application locally:
 git clone https://github.com/Mani199810/DailyRounds-Marrow---SDE-1-assignment.git
 cd DailyRounds-Marrow---SDE-1-assignment
 ```
-
-### Install Dependencies
-```bash
-cd server
-npm install
-cd client
-npm install
-```
-
 ### Environment Variables
 Create a `.env` file in the root directory with the following keys:
 ```
@@ -48,6 +39,15 @@ GOOGLE_CALLBACK_URL=http://localhost:5000/auth/google/callback
 GOOGLE_CLIENT_ID=your_client_id
 GOOGLE_CLIENT_SECRET=your_client_secret
 ```
+
+### Install Dependencies
+```bash
+cd server
+npm install
+cd client
+npm install
+```
+
 
 ### Start the Application
 Run the following command to start both the backend and frontend:
@@ -68,7 +68,7 @@ npm run start-client
 
 ## User Registration
 
-- Users must register if they are not already existing in the system.
+- Users must register if they do not already exist in the system.
 
 ## API Endpoints
 
